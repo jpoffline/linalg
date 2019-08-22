@@ -2,6 +2,9 @@ package linalg
 
 import "math/rand"
 
+// NewNumericMatrix returns a new matrix with
+// the provided dimensions. Note that all values
+// are intialised to the Numeric zero.
 func NewNumericMatrix(dimx, dimy int) *NumericMatrix {
 	mtx := NumericMatrix{}
 	for i := 0; i < dimx; i++ {
@@ -12,6 +15,9 @@ func NewNumericMatrix(dimx, dimy int) *NumericMatrix {
 	return &mtx
 }
 
+// NewIdentityMatrix returns an identity matrix with
+// the provided dimension (these are square, diagonal
+// contain zeros everywhere except the diagonal, which are unity).
 func NewIdentityMatrix(dim int) *NumericMatrix {
 	mtx := NewNumericMatrix(dim, dim)
 	for i := 0; i < dim; i++ {
@@ -20,6 +26,9 @@ func NewIdentityMatrix(dim int) *NumericMatrix {
 	return mtx
 }
 
+// NewRandomMatrix will return a matrix with the
+// provided dimensions, whose elements are
+// random numbers.
 func NewRandomMatrix(dimx, dimy int) *NumericMatrix {
 	mtx := NewNumericMatrix(dimx, dimy)
 	for i := 0; i < dimx; i++ {
