@@ -5,7 +5,9 @@ import "fmt"
 // Mul will multiply the provided matrices together.
 // We check for dimensional-compatibility.
 func (mtx *NumericMatrix) Mul(mtx1 *NumericMatrix) (*NumericMatrix, error) {
-	if mtx.dimx != mtx1.dimy {
+	if mtx.dimy != mtx1.dimx {
+		mtx.Print()
+		mtx1.Print()
 		return nil, fmt.Errorf("incompatible matrix multiplication attempted")
 	}
 
@@ -28,6 +30,8 @@ func (mtx *NumericMatrix) Add(mtx1 *NumericMatrix) (*NumericMatrix, error) {
 	}
 
 	if mtx.dimy != mtx1.dimy {
+		mtx.Print()
+		mtx1.Print()
 		return nil, fmt.Errorf("incompatible matrix addition attempted: dimy")
 	}
 
@@ -40,8 +44,8 @@ func (mtx *NumericMatrix) Add(mtx1 *NumericMatrix) (*NumericMatrix, error) {
 	return res, nil
 }
 
-// Operate will apply the provided function to every element of the matrix.
-func (mtx *NumericMatrix) Operate(cb func(Number) Number) {
+// Map will apply the provided function to every element of the matrix.
+func (mtx *NumericMatrix) Map(cb func(Number) Number) {
 	for i := 0; i < mtx.dimx; i++ {
 		for j := 0; j < mtx.dimy; j++ {
 			mtx.values[i][j] = cb(mtx.values[i][j])
@@ -63,6 +67,7 @@ func (mtx *NumericMatrix) Set(i, j int, val Number) {
 
 // Print will crudely print out the matrix.
 func (mtx *NumericMatrix) Print() {
+	fmt.Printf("matrix has dim %v x %v\n", mtx.dimx, mtx.dimy)
 	for _, rr := range mtx.values {
 		fmt.Println(rr)
 	}

@@ -55,8 +55,8 @@ func (vec *NumericVector) Print() {
 	}
 }
 
-// Operate will apply the provided function to every element of the matrix.
-func (vec *NumericVector) Operate(cb func(Number) Number) *NumericVector {
+// Map will apply the provided function to every element of the vector.
+func (vec *NumericVector) Map(cb func(Number) Number) *NumericVector {
 	res := NewNumericVector(vec.dim)
 	for i := range vec.values {
 		res.values[i] = cb(vec.values[i])

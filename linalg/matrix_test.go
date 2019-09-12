@@ -14,7 +14,7 @@ func TestNewIdentityMatrix(t *testing.T) {
 	}
 }
 
-func TestMatrixMultiplicationForIncompatibleMatrices(t *testing.T) {
+func TestMatrixMultiplicationForIncompatibleSquareMatrices(t *testing.T) {
 	mtx1 := NewIdentityMatrix(2)
 	mtx2 := NewIdentityMatrix(3)
 
@@ -25,7 +25,18 @@ func TestMatrixMultiplicationForIncompatibleMatrices(t *testing.T) {
 
 }
 
-func TestMatrixMultiplicationForCompatibleMatrices(t *testing.T) {
+func TestMatrixMultiplicationForIncompatibleRectangularMatrices(t *testing.T) {
+	mtx1 := NewNumericMatrix(3, 2)
+	mtx2 := NewNumericMatrix(3, 2)
+
+	_, err := mtx1.Mul(mtx2)
+	if err.Error() != "incompatible matrix multiplication attempted" {
+		t.Errorf("didnt get expected error string")
+	}
+
+}
+
+func TestMatrixMultiplicationForCompatibleSquareMatrices(t *testing.T) {
 	mtx1 := NewIdentityMatrix(2)
 	mtx2 := NewIdentityMatrix(2)
 
@@ -44,4 +55,23 @@ func TestMatrixMultiplicationForCompatibleMatrices(t *testing.T) {
 		t.Errorf("didnt get expected value on 1,0")
 	}
 
+}
+
+func TestMatrixMultiplicationForCompatibleRectangularMatrices(t *testing.T) {
+	mtx1 := NewNumericMatrix(3, 2)
+	mtx2 := NewNumericMatrix(2, 3)
+
+	mtx3, err := mtx1.Mul(mtx2)
+
+	if err != nil {
+		t.Errorf("should not have not an error")
+	}
+
+	if mtx3.dimx != mtx3.dimy {
+		t.Errorf("should be a square matrix result")
+	}
+
+	if mtx3.dimx != 3 {
+		t.Errorf("should be 3x3")
+	}
 }
