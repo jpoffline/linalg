@@ -6,7 +6,7 @@ import (
 
 func (vec *NumericVector) sigmoid() {
 	for _, v := range vec.values {
-		v = sigmoid(v)
+		v = Sigmoid(v)
 	}
 }
 
@@ -44,7 +44,7 @@ func (v1 *NumericVector) Sum(v2 *NumericVector) (*NumericVector, error) {
 	}
 	res := NewNumericVector(v1.dim)
 	for i := range v1.values {
-		res.Push(v1.Value(i) + v2.Value(i))
+		res.values[i] = v1.Value(i) + v2.Value(i)
 	}
 	return res, nil
 }
@@ -53,4 +53,13 @@ func (vec *NumericVector) Print() {
 	for _, rr := range vec.values {
 		fmt.Println(rr)
 	}
+}
+
+// Operate will apply the provided function to every element of the matrix.
+func (vec *NumericVector) Operate(cb func(Number) Number) *NumericVector {
+	res := NewNumericVector(vec.dim)
+	for i := range vec.values {
+		res.values[i] = cb(vec.values[i])
+	}
+	return res
 }

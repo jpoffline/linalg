@@ -12,7 +12,11 @@ func NewNumericVector(cap int) *NumericVector {
 func RandomNumbers(n int) *NumericVector {
 	nums := NewNumericVector(n)
 	for i := 0; i < n; i++ {
-		nums.Push(Number(rand.Float64()))
+		nums.values[i] = Number(rand.Float64()*2 - 1)
 	}
 	return (nums)
+}
+
+func NewRandomVector(cap int) *NumericVector {
+	return RandomNumbers(cap)
 }

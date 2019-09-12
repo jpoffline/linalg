@@ -15,6 +15,14 @@ func NewNumericMatrix(dimx, dimy int) *NumericMatrix {
 	return &mtx
 }
 
+func NewNumericMatrixFromVector(vec NumericVector) *NumericMatrix {
+	mtx := NewNumericMatrix(vec.dim, 1)
+	for i := 0; i < vec.dim; i++ {
+		mtx.values[i][0] = vec.values[i]
+	}
+	return mtx
+}
+
 // NewIdentityMatrix returns an identity matrix with
 // the provided dimension (these are square, diagonal
 // contain zeros everywhere except the diagonal, which are unity).
@@ -33,7 +41,7 @@ func NewRandomMatrix(dimx, dimy int) *NumericMatrix {
 	mtx := NewNumericMatrix(dimx, dimy)
 	for i := 0; i < dimx; i++ {
 		for j := 0; j < dimy; j++ {
-			mtx.values[i][j] = Number(rand.Float64())
+			mtx.values[i][j] = Number(rand.Float64()*2 - 1)
 		}
 	}
 	return mtx

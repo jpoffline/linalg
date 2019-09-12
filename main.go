@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	linalg "jpnn/linalg"
+
+	linalg "github.com/jpoffline/jpnn/linalg"
+	"github.com/jpoffline/jpnn/neural"
 )
 
-func main() {
+func main2() {
 	vec := linalg.NewNumericVector(4)
 	vec.Set(0, 3)
 
@@ -41,7 +43,23 @@ func main() {
 	}
 	idmsq.Print()
 
-	rr := linalg.NewRandomMatrix(20, 20)
+	rr := linalg.NewRandomMatrix(2, 2)
+	rr.Print()
+	rr.Operate(func(val linalg.Number) linalg.Number { return val * val })
 	rr.Print()
 
+	vec2 := linalg.NewNumericVector(4)
+	mtx2 := linalg.NewNumericMatrixFromVector(*vec2)
+	mtx2.Print()
+
+}
+
+func runnn() {
+	nn := neural.New(2, 2, 1)
+	inputs := linalg.NewNumericVector(2)
+	nn.FeedForward(inputs)
+}
+
+func main() {
+	runnn()
 }

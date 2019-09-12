@@ -22,6 +22,33 @@ func (mtx *NumericMatrix) Mul(mtx1 *NumericMatrix) (*NumericMatrix, error) {
 	return res, nil
 }
 
+func (mtx *NumericMatrix) Add(mtx1 *NumericMatrix) (*NumericMatrix, error) {
+	if mtx.dimx != mtx1.dimx {
+		return nil, fmt.Errorf("incompatible matrix addition attempted: dimx")
+	}
+
+	if mtx.dimy != mtx1.dimy {
+		return nil, fmt.Errorf("incompatible matrix addition attempted: dimy")
+	}
+
+	res := NewNumericMatrix(mtx.dimx, mtx.dimy)
+	for i := 0; i < mtx.dimx; i++ {
+		for j := 0; j < mtx.dimy; j++ {
+			res.values[i][j] = mtx.values[i][j] + mtx1.values[i][j]
+		}
+	}
+	return res, nil
+}
+
+// Operate will apply the provided function to every element of the matrix.
+func (mtx *NumericMatrix) Operate(cb func(Number) Number) {
+	for i := 0; i < mtx.dimx; i++ {
+		for j := 0; j < mtx.dimy; j++ {
+			mtx.values[i][j] = cb(mtx.values[i][j])
+		}
+	}
+}
+
 // Value will return the value of the matrix at the
 // provided i,j values.
 func (mtx *NumericMatrix) Value(i, j int) Number {
