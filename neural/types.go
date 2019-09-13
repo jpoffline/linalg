@@ -20,3 +20,11 @@ type Weights = *linalg.NumericMatrix
 type Bias = *linalg.NumericMatrix
 type Inputs = *linalg.NumericMatrix
 type Outputs = *linalg.NumericMatrix
+
+/*
+type ActivationFunction struct {
+	afun func(num linalg.Number) linalg.Number
+}
+
+func (a *ActivationFunction) afun (num linalg.Number) linalg.Number { return linalg.Sigmoid(num) }
+*/

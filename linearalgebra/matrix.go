@@ -25,6 +25,7 @@ func (mtx *NumericMatrix) Mul(mtx1 *NumericMatrix) *NumericMatrix {
 	return res
 }
 
+// ElemMul will perform element-wise multiplication.
 func (mtx *NumericMatrix) ElemMul(mtx1 *NumericMatrix) *NumericMatrix {
 	if mtx.dimx != mtx1.dimx {
 		mtx.Print()
@@ -51,7 +52,7 @@ func (mtx *NumericMatrix) ElemMul(mtx1 *NumericMatrix) *NumericMatrix {
 	return res
 }
 
-// Add will add two matrices together.
+// Add will add two matrices together and return a new matrix.
 func (mtx *NumericMatrix) Add(mtx1 *NumericMatrix) *NumericMatrix {
 	if mtx.dimx != mtx1.dimx {
 		panic("incompatible matrix addition attempted: dimx")
@@ -74,7 +75,7 @@ func (mtx *NumericMatrix) Add(mtx1 *NumericMatrix) *NumericMatrix {
 	return res
 }
 
-// Subtract will subtract the provided matrix.
+// Subtract will subtract the provided matrix and return a new matrix.
 func (mtx *NumericMatrix) Subtract(mtx1 *NumericMatrix) *NumericMatrix {
 	if mtx.dimx != mtx1.dimx {
 		panic("incompatible matrix subtraction attempted: dimx")
@@ -97,7 +98,8 @@ func (mtx *NumericMatrix) Subtract(mtx1 *NumericMatrix) *NumericMatrix {
 	return res
 }
 
-// Map will apply the provided function to every element of the matrix.
+// Map will apply the provided function to every element of the matrix
+// and return a new matrix.
 func (mtx *NumericMatrix) Map(cb func(Number) Number) *NumericMatrix {
 	res := NewNumericMatrix(mtx.dimy, mtx.dimx)
 	for i := 0; i < mtx.dimx; i++ {
@@ -133,6 +135,7 @@ func (mtx *NumericMatrix) Len() (int, int) {
 	return mtx.dimx, mtx.dimy
 }
 
+// ToVector will convert a matrix into a vector by squashing.
 func (mtx *NumericMatrix) ToVector() *NumericVector {
 	vec := NewEmptyNumericVector()
 	for i := 0; i < mtx.dimx; i++ {
@@ -143,6 +146,7 @@ func (mtx *NumericMatrix) ToVector() *NumericVector {
 	return vec
 }
 
+// Transpose returns the transpose of the matrix.
 func (mtx *NumericMatrix) Transpose() *NumericMatrix {
 	res := NewNumericMatrix(mtx.dimy, mtx.dimx)
 	for i := 0; i < mtx.dimx; i++ {

@@ -5,16 +5,23 @@ import (
 	"math"
 )
 
+// Sigmoid computes the sigmoid function at the provided value.
+// sigmoid(x) = 1/(1+e^-x)
 func Sigmoid(x Number) Number {
 	return Number(1 / (1 + math.Exp(-float64(x))))
 }
 
+// Dsigmoid computes the derivative of the sigmoid function
+// at the provided value.
 func Dsigmoid(x Number) Number {
 	sig := Sigmoid(x)
-	return sig * (1 - sig)
+	return Dsigmoid2(sig)
 }
-func Dsigmoid2(sig Number) Number {
 
+// Dsigmoid2 computes the pseudo-derivative of the
+// sigmoid function, where the provided value
+// is assumed to already have been sigmoid-ed.
+func Dsigmoid2(sig Number) Number {
 	return sig * (1 - sig)
 }
 
