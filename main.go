@@ -1,8 +1,8 @@
 package main
 
 import (
-	linalg "github.com/jpoffline/jpnn/linalg"
-	"github.com/jpoffline/jpnn/neural"
+	linalg "github.com/jpoffline/linalg/linearalgebra"
+	"github.com/jpoffline/linalg/neural"
 )
 
 func runnn() {

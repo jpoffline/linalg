@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	linalg "github.com/jpoffline/jpnn/linalg"
+	linalg "github.com/jpoffline/linalg/linearalgebra"
 )
 
 func main2() {
@@ -44,7 +44,7 @@ func main2() {
 
 	rr := linalg.NewRandomMatrix(2, 2)
 	rr.Print()
-	rr.Operate(func(val linalg.Number) linalg.Number { return val * val })
+	rr.Map(func(val linalg.Number) linalg.Number { return val * val })
 	rr.Print()
 
 	vec2 := linalg.NewNumericVector(4)
