@@ -4,11 +4,12 @@ import "fmt"
 
 // Mul will multiply the provided matrices together.
 // We check for dimensional-compatibility.
-func (mtx *NumericMatrix) Mul(mtx1 *NumericMatrix) (*NumericMatrix, error) {
+func (mtx *NumericMatrix) Mul(mtx1 *NumericMatrix) *NumericMatrix {
 	if mtx.dimy != mtx1.dimx {
 		mtx.Print()
 		mtx1.Print()
-		return nil, fmt.Errorf("incompatible matrix multiplication attempted")
+		panic("incompatible matrix multiplication attempted")
+		return nil
 	}
 
 	res := NewNumericMatrix(mtx.dimx, mtx1.dimy)
@@ -21,18 +22,47 @@ func (mtx *NumericMatrix) Mul(mtx1 *NumericMatrix) (*NumericMatrix, error) {
 		}
 	}
 
-	return res, nil
+	return res
 }
 
-func (mtx *NumericMatrix) Add(mtx1 *NumericMatrix) (*NumericMatrix, error) {
+func (mtx *NumericMatrix) ElemMul(mtx1 *NumericMatrix) *NumericMatrix {
 	if mtx.dimx != mtx1.dimx {
-		return nil, fmt.Errorf("incompatible matrix addition attempted: dimx")
+		mtx.Print()
+		mtx1.Print()
+		panic("incompatible matrix element-multiplication attempted: dimx")
+		return nil
 	}
 
 	if mtx.dimy != mtx1.dimy {
 		mtx.Print()
 		mtx1.Print()
-		return nil, fmt.Errorf("incompatible matrix addition attempted: dimy")
+		panic("incompatible matrix element-multiplication attempted: dimy")
+		return nil
+	}
+
+	res := NewNumericMatrix(mtx.dimx, mtx1.dimy)
+
+	for i := 0; i < res.dimx; i++ {
+		for j := 0; j < res.dimy; j++ {
+			res.values[i][j] = mtx.values[i][j] * mtx1.values[i][j]
+		}
+	}
+
+	return res
+}
+
+// Add will add two matrices together.
+func (mtx *NumericMatrix) Add(mtx1 *NumericMatrix) *NumericMatrix {
+	if mtx.dimx != mtx1.dimx {
+		panic("incompatible matrix addition attempted: dimx")
+		return nil
+	}
+
+	if mtx.dimy != mtx1.dimy {
+		mtx.Print()
+		mtx1.Print()
+		panic("incompatible matrix addition attempted: dimy")
+		return nil
 	}
 
 	res := NewNumericMatrix(mtx.dimx, mtx.dimy)
@@ -41,19 +71,21 @@ func (mtx *NumericMatrix) Add(mtx1 *NumericMatrix) (*NumericMatrix, error) {
 			res.values[i][j] = mtx.values[i][j] + mtx1.values[i][j]
 		}
 	}
-	return res, nil
+	return res
 }
 
 // Subtract will subtract the provided matrix.
-func (mtx *NumericMatrix) Subtract(mtx1 *NumericMatrix) (*NumericMatrix, error) {
+func (mtx *NumericMatrix) Subtract(mtx1 *NumericMatrix) *NumericMatrix {
 	if mtx.dimx != mtx1.dimx {
-		return nil, fmt.Errorf("incompatible matrix subtraction attempted: dimx")
+		panic("incompatible matrix subtraction attempted: dimx")
+		return nil
 	}
 
 	if mtx.dimy != mtx1.dimy {
 		mtx.Print()
 		mtx1.Print()
-		return nil, fmt.Errorf("incompatible matrix subtraction attempted: dimy")
+		panic("incompatible matrix subtraction attempted: dimy")
+		return nil
 	}
 
 	res := NewNumericMatrix(mtx.dimx, mtx.dimy)
@@ -62,16 +94,18 @@ func (mtx *NumericMatrix) Subtract(mtx1 *NumericMatrix) (*NumericMatrix, error) 
 			res.values[i][j] = mtx.values[i][j] - mtx1.values[i][j]
 		}
 	}
-	return res, nil
+	return res
 }
 
 // Map will apply the provided function to every element of the matrix.
-func (mtx *NumericMatrix) Map(cb func(Number) Number) {
+func (mtx *NumericMatrix) Map(cb func(Number) Number) *NumericMatrix {
+	res := NewNumericMatrix(mtx.dimy, mtx.dimx)
 	for i := 0; i < mtx.dimx; i++ {
 		for j := 0; j < mtx.dimy; j++ {
-			mtx.values[i][j] = cb(mtx.values[i][j])
+			res.values[i][j] = cb(mtx.values[i][j])
 		}
 	}
+	return res
 }
 
 // Value will return the value of the matrix at the

@@ -10,9 +10,10 @@ import (
 // number of inputs, hidden neurons, and outputs.
 func New(numInput, numHidden, numOutput int) *NeuralNet {
 	nn := NeuralNet{
-		numInputs: numInput,
-		numHidden: numHidden,
-		numOutput: numOutput,
+		numInputs:    numInput,
+		numHidden:    numHidden,
+		numOutput:    numOutput,
+		learningRate: 0.1,
 	}
 	nn.Info()
 
@@ -32,33 +33,4 @@ func (nn *NeuralNet) Info() {
 	fmt.Printf("    => number of hidden neurons: %v\n", nn.numHidden)
 	fmt.Printf("    => number of outputs: %v\n", nn.numOutput)
 	fmt.Println("---------------------------------------------")
-}
-
-// Train will train the net for the provided inputs and targets.
-func (nn *NeuralNet) Train(inputs, targets *linalg.NumericVector) {
-
-	tm := linalg.NewNumericMatrixFromVector(*targets)
-	outputs := nn.FeedForward(inputs)
-	opm := linalg.NewNumericMatrixFromVector(*outputs)
-	errorsOutput, _ := tm.Subtract(opm)
-
-	weightsHOT := nn.weightsHO.Transpose()
-	errorsHidden, _ := weightsHOT.Mul(errorsOutput)
-	errorsHidden.Print()
-}
-
-func doLayerCalc(weights Weights, inputs Inputs, bias Bias) Outputs {
-	fmt.Println("doing layer calc")
-	p1, err := weights.Mul(inputs)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	p2, err := p1.Add(bias)
-	if err != nil {
-		fmt.Println(err)
-	}
-	p2.Map(func(num linalg.Number) linalg.Number { return linalg.Sigmoid(num) })
-	return p2
-
 }

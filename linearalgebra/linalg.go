@@ -13,6 +13,10 @@ func Dsigmoid(x Number) Number {
 	sig := Sigmoid(x)
 	return sig * (1 - sig)
 }
+func Dsigmoid2(sig Number) Number {
+
+	return sig * (1 - sig)
+}
 
 func (mtx *NumericMatrix) Dot(vec *NumericVector) (*NumericVector, error) {
 	if mtx.dimy != vec.dim {

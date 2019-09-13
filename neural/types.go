@@ -12,8 +12,10 @@ type NeuralNet struct {
 	weightsHO                       Weights
 	biasIH                          Bias
 	biasHO                          Bias
+	learningRate                    linalg.Number
 }
 
+// Weights is the type to hold the weights connecting neurons
 type Weights = *linalg.NumericMatrix
 type Bias = *linalg.NumericMatrix
 type Inputs = *linalg.NumericMatrix
