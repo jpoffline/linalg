@@ -9,6 +9,11 @@ func NewNumericVector(cap int) *NumericVector {
 	return &vec
 }
 
+func NewEmptyNumericVector() *NumericVector {
+	vec := NumericVector{}
+	return &vec
+}
+
 func RandomNumbers(n int) *NumericVector {
 	nums := NewNumericVector(n)
 	for i := 0; i < n; i++ {

@@ -44,6 +44,27 @@ func (mtx *NumericMatrix) Add(mtx1 *NumericMatrix) (*NumericMatrix, error) {
 	return res, nil
 }
 
+// Subtract will subtract the provided matrix.
+func (mtx *NumericMatrix) Subtract(mtx1 *NumericMatrix) (*NumericMatrix, error) {
+	if mtx.dimx != mtx1.dimx {
+		return nil, fmt.Errorf("incompatible matrix subtraction attempted: dimx")
+	}
+
+	if mtx.dimy != mtx1.dimy {
+		mtx.Print()
+		mtx1.Print()
+		return nil, fmt.Errorf("incompatible matrix subtraction attempted: dimy")
+	}
+
+	res := NewNumericMatrix(mtx.dimx, mtx.dimy)
+	for i := 0; i < mtx.dimx; i++ {
+		for j := 0; j < mtx.dimy; j++ {
+			res.values[i][j] = mtx.values[i][j] - mtx1.values[i][j]
+		}
+	}
+	return res, nil
+}
+
 // Map will apply the provided function to every element of the matrix.
 func (mtx *NumericMatrix) Map(cb func(Number) Number) {
 	for i := 0; i < mtx.dimx; i++ {
@@ -76,4 +97,24 @@ func (mtx *NumericMatrix) Print() {
 // Len returns the dimx and dimy of the matrix.
 func (mtx *NumericMatrix) Len() (int, int) {
 	return mtx.dimx, mtx.dimy
+}
+
+func (mtx *NumericMatrix) ToVector() *NumericVector {
+	vec := NewEmptyNumericVector()
+	for i := 0; i < mtx.dimx; i++ {
+		for j := 0; j < mtx.dimy; j++ {
+			vec.Push(mtx.values[i][j])
+		}
+	}
+	return vec
+}
+
+func (mtx *NumericMatrix) Transpose() *NumericMatrix {
+	res := NewNumericMatrix(mtx.dimy, mtx.dimx)
+	for i := 0; i < mtx.dimx; i++ {
+		for j := 0; j < mtx.dimy; j++ {
+			res.values[j][i] = mtx.values[i][j]
+		}
+	}
+	return res
 }

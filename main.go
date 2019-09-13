@@ -6,11 +6,18 @@ import (
 )
 
 func runnn() {
-	neuralnet := neural.New(2, 2, 1)
-	inputs := linalg.NewNumericVector(2)
-	inputs.Set(0, 1)
-	inputs.Set(1, 2)
-	neuralnet.FeedForward(inputs)
+	neuralnet := neural.New(2, 2, 2)
+	inputs := linalg.NewEmptyNumericVector()
+	inputs.Push(1)
+	inputs.Push(0)
+
+	targets := linalg.NewEmptyNumericVector()
+	targets.Push(1)
+	targets.Push(0)
+	out := neuralnet.FeedForward(inputs)
+	out.Print()
+
+	neuralnet.Train(inputs, targets)
 }
 
 func main() {

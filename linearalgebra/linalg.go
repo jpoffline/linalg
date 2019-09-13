@@ -9,7 +9,7 @@ func Sigmoid(x Number) Number {
 	return Number(1 / (1 + math.Exp(-float64(x))))
 }
 
-func dsigmoid(x Number) Number {
+func Dsigmoid(x Number) Number {
 	sig := Sigmoid(x)
 	return sig * (1 - sig)
 }
