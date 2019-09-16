@@ -1,11 +1,28 @@
 package neural
 
 import (
+	"fmt"
+	"math"
+	"math/rand"
+
 	linalg "github.com/jpoffline/linalg/linearalgebra"
 )
 
-// Train will train the net for the provided inputs and targets.
-func (nn *NeuralNet) Train(inputs, targets []linalg.Number) {
+// Train will train the network on the provided training data
+// for the given number of iterations.
+func (nn *NeuralNet) Train(data []TrainingData, iters int) {
+	ndata := len(data)
+	for i := 0; i < iters; i++ {
+		data := data[rand.Intn(ndata)]
+		score := nn.train(data.Inputs, data.Targets)
+		if math.Mod(float64(i), float64(iters)/1000) == 0 {
+			fmt.Printf("%v %v\n", linalg.Number(i)*nn.meta.learningRate, score)
+		}
+	}
+}
+
+// train will train the net for the provided inputs and targets.
+func (nn *NeuralNet) train(inputs, targets []linalg.Number) linalg.Number {
 	nn.trainCount++
 	// prepare inputs.
 	im := linalg.NewNumericMatrixFromSlice(inputs)
@@ -24,11 +41,13 @@ func (nn *NeuralNet) Train(inputs, targets []linalg.Number) {
 	// calc output layer errors.
 	targetsM := linalg.NewNumericMatrixFromSlice(targets)
 	errorsOutput := calcErrorOutputLayer(targetsM, outputs)
-	nn.weightsHO, nn.biasHO = calcNewWeightsBias(nn.learningRate, hiddenOutputs, outputs, errorsOutput, nn.weightsHO, nn.biasHO)
+	nn.weightsHO, nn.biasHO = calcNewWeightsBias(nn.meta.learningRate, hiddenOutputs, outputs, errorsOutput, nn.weightsHO, nn.biasHO)
 
 	// calc hidden layer errors
 	errorsHidden := calcErrorHiddenLayer(nn.weightsHO, errorsOutput)
-	nn.weightsIH, nn.biasIH = calcNewWeightsBias(nn.learningRate, im, hiddenOutputs, errorsHidden, nn.weightsIH, nn.biasIH)
+	nn.weightsIH, nn.biasIH = calcNewWeightsBias(nn.meta.learningRate, im, hiddenOutputs, errorsHidden, nn.weightsIH, nn.biasIH)
+
+	return errorsOutput.Mag()
 }
 
 func calcNewWeightsBias(lr linalg.Number, ip, o, e, w, b *linalg.NumericMatrix) (*linalg.NumericMatrix, *linalg.NumericMatrix) {

@@ -1,6 +1,9 @@
 package linearalgebra
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 // Mul will multiply the provided matrices together.
 // We check for dimensional-compatibility.
@@ -145,4 +148,14 @@ func (mtx *NumericMatrix) Transpose() *NumericMatrix {
 		}
 	}
 	return res
+}
+
+func (mtx *NumericMatrix) Mag() Number {
+	var mag Number
+	for i := 0; i < mtx.dimx; i++ {
+		for j := 0; j < mtx.dimy; j++ {
+			mag += mtx.values[i][j] * mtx.values[i][j]
+		}
+	}
+	return Number(math.Sqrt(float64(mag)))
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 
 	linalg "github.com/jpoffline/linalg/linearalgebra"
 	"github.com/jpoffline/linalg/neural"
@@ -21,12 +20,7 @@ func nnXOR() {
 		neural.TrainingData{Inputs: []linalg.Number{0, 1}, Targets: []linalg.Number{1}},
 		neural.TrainingData{Inputs: []linalg.Number{0, 0}, Targets: []linalg.Number{0}},
 	}
-
-	for i := 0; i < 100000; i++ {
-		data := td[rand.Intn(4)]
-
-		neuralnet.Train(data.Inputs, data.Targets)
-	}
+	neuralnet.Train(td, 100000)
 
 	neuralnet.Serialise("nn.json")
 

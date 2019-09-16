@@ -19,6 +19,11 @@ type NumericMatrix struct {
 	dimx, dimy int
 }
 
+// MarshalJSON will convert a NumericMatrix object into a json string.
 func (m *NumericMatrix) MarshalJSON() ([]byte, error) {
-	return json.Marshal(map[string]interface{}{"dimx": m.dimx, "dimy": m.dimy, "values": m.values})
+	return json.Marshal(map[string]interface{}{
+		"dimx":   m.dimx,
+		"dimy":   m.dimy,
+		"values": m.values,
+	})
 }
