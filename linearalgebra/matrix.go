@@ -56,14 +56,10 @@ func (mtx *NumericMatrix) ElemMul(mtx1 *NumericMatrix) *NumericMatrix {
 func (mtx *NumericMatrix) Add(mtx1 *NumericMatrix) *NumericMatrix {
 	if mtx.dimx != mtx1.dimx {
 		panic("incompatible matrix addition attempted: dimx")
-		return nil
 	}
 
 	if mtx.dimy != mtx1.dimy {
-		mtx.Print()
-		mtx1.Print()
 		panic("incompatible matrix addition attempted: dimy")
-		return nil
 	}
 
 	res := NewNumericMatrix(mtx.dimx, mtx.dimy)
@@ -79,14 +75,10 @@ func (mtx *NumericMatrix) Add(mtx1 *NumericMatrix) *NumericMatrix {
 func (mtx *NumericMatrix) Subtract(mtx1 *NumericMatrix) *NumericMatrix {
 	if mtx.dimx != mtx1.dimx {
 		panic("incompatible matrix subtraction attempted: dimx")
-		return nil
 	}
 
 	if mtx.dimy != mtx1.dimy {
-		mtx.Print()
-		mtx1.Print()
 		panic("incompatible matrix subtraction attempted: dimy")
-		return nil
 	}
 
 	res := NewNumericMatrix(mtx.dimx, mtx.dimy)

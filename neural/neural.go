@@ -16,7 +16,7 @@ func New(numInput, numHidden, numOutput int) *NeuralNet {
 	}
 
 	nn.build()
-	nn.SetLearningRate(0.1)
+	nn.SetLearningRate(0.05)
 	nn.Info()
 
 	return &nn

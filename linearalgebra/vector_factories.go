@@ -25,3 +25,11 @@ func RandomNumbers(n int) *NumericVector {
 func NewRandomVector(cap int) *NumericVector {
 	return RandomNumbers(cap)
 }
+
+func VectorFromSlice(numbers []Number) *NumericVector {
+	vec := NumericVector{}
+	for _, n := range numbers {
+		vec.Push(n)
+	}
+	return &vec
+}

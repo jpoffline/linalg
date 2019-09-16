@@ -9,6 +9,7 @@ func (nn *NeuralNet) Train(inputs, targets *linalg.NumericVector) {
 
 	// prepare inputs.
 	im := linalg.NewNumericMatrixFromVector(*inputs)
+
 	// generate the hidden outputs.
 
 	ho1 := nn.weightsIH.Mul(im)
@@ -20,38 +21,29 @@ func (nn *NeuralNet) Train(inputs, targets *linalg.NumericVector) {
 	outputs := fo1.Add(nn.biasHO)
 	outputs = outputs.Map(func(num linalg.Number) linalg.Number { return linalg.Sigmoid(num) })
 
-	// prepare the targets
-	targetsM := linalg.NewNumericMatrixFromVector(*targets)
-
 	// calc output layer errors.
+	targetsM := linalg.NewNumericMatrixFromVector(*targets)
 	errorsOutput := calcErrorOutputLayer(targetsM, outputs)
-
-	// calc gradient
-	gradOutput := gradient(nn.learningRate, outputs, errorsOutput)
-	hoT := hiddenOutputs.Transpose()
-	weightsHOdel := gradOutput.Mul(hoT)
-
-	// adjust
-	nn.weightsHO = nn.weightsHO.Add(weightsHOdel)
-	nn.biasHO = nn.biasHO.Add(gradOutput)
+	nn.weightsHO, nn.biasHO = calcNewWeightsBias(nn.learningRate, hiddenOutputs, outputs, errorsOutput, nn.weightsHO, nn.biasHO)
 
 	// calc hidden layer errors
 	errorsHidden := calcErrorHiddenLayer(nn.weightsHO, errorsOutput)
+	nn.weightsIH, nn.biasIH = calcNewWeightsBias(nn.learningRate, im, hiddenOutputs, errorsHidden, nn.weightsIH, nn.biasIH)
+}
 
-	// calc gradient
-	gradHidden := gradient(nn.learningRate, hiddenOutputs, errorsHidden)
-	inputsT := im.Transpose()
+func calcNewWeightsBias(lr linalg.Number, ip, o, e, w, b *linalg.NumericMatrix) (*linalg.NumericMatrix, *linalg.NumericMatrix) {
+	gradHidden := gradient(o, e)
+	gradHidden = gradHidden.Map(func(elem linalg.Number) linalg.Number { return elem * lr })
+	inputsT := ip.Transpose()
 	weightsIHdel := gradHidden.Mul(inputsT)
 
 	// adjust
-	nn.weightsIH = nn.weightsIH.Add(weightsIHdel)
-	nn.biasIH = nn.biasIH.Add(gradHidden)
+	return w.Add(weightsIHdel), b.Add(gradHidden)
 }
 
-func gradient(lr linalg.Number, output, errors *linalg.NumericMatrix) *linalg.NumericMatrix {
+func gradient(output, errors *linalg.NumericMatrix) *linalg.NumericMatrix {
 	o2 := output.Map(func(elem linalg.Number) linalg.Number { return linalg.Dsigmoid2(elem) })
-	eo := o2.ElemMul(errors)
-	return eo.Map(func(elem linalg.Number) linalg.Number { return elem * lr })
+	return o2.ElemMul(errors)
 }
 
 func calcErrorOutputLayer(t, o *linalg.NumericMatrix) *linalg.NumericMatrix {

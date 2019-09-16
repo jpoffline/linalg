@@ -36,10 +36,8 @@ func main2() {
 	vv.Print()
 
 	twobytwo.Print()
-	idmsq, err := twobytwo.Mul(idm)
-	if err != nil {
-		fmt.Println(err)
-	}
+	idmsq := twobytwo.Mul(idm)
+
 	idmsq.Print()
 
 	rr := linalg.NewRandomMatrix(2, 2)
