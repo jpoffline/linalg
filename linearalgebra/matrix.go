@@ -101,7 +101,7 @@ func (mtx *NumericMatrix) Subtract(mtx1 *NumericMatrix) *NumericMatrix {
 // Map will apply the provided function to every element of the matrix
 // and return a new matrix.
 func (mtx *NumericMatrix) Map(cb func(Number) Number) *NumericMatrix {
-	res := NewNumericMatrix(mtx.dimy, mtx.dimx)
+	res := NewNumericMatrix(mtx.dimx, mtx.dimy)
 	for i := 0; i < mtx.dimx; i++ {
 		for j := 0; j < mtx.dimy; j++ {
 			res.values[i][j] = cb(mtx.values[i][j])
