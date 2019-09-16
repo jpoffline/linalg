@@ -5,9 +5,9 @@ import (
 )
 
 // FeedForward is the place to pass the provided inputs to the neural network.
-func (nn *NeuralNet) FeedForward(inputs *linalg.NumericVector) *linalg.NumericVector {
+func (nn *NeuralNet) FeedForward(inputs []linalg.Number) []linalg.Number {
 	// prepare the input.
-	im := linalg.NewNumericMatrixFromVector(*inputs)
+	im := linalg.NewNumericMatrixFromSlice(inputs)
 	// generate the hidden outputs.
 	hiddenOutputs := doLayerCalc(nn.weightsIH, im, nn.biasIH)
 	// generate the final output.

@@ -5,10 +5,10 @@ import (
 )
 
 // Train will train the net for the provided inputs and targets.
-func (nn *NeuralNet) Train(inputs, targets *linalg.NumericVector) {
-
+func (nn *NeuralNet) Train(inputs, targets []linalg.Number) {
+	nn.trainCount++
 	// prepare inputs.
-	im := linalg.NewNumericMatrixFromVector(*inputs)
+	im := linalg.NewNumericMatrixFromSlice(inputs)
 
 	// generate the hidden outputs.
 
@@ -22,7 +22,7 @@ func (nn *NeuralNet) Train(inputs, targets *linalg.NumericVector) {
 	outputs = outputs.Map(func(num linalg.Number) linalg.Number { return linalg.Sigmoid(num) })
 
 	// calc output layer errors.
-	targetsM := linalg.NewNumericMatrixFromVector(*targets)
+	targetsM := linalg.NewNumericMatrixFromSlice(targets)
 	errorsOutput := calcErrorOutputLayer(targetsM, outputs)
 	nn.weightsHO, nn.biasHO = calcNewWeightsBias(nn.learningRate, hiddenOutputs, outputs, errorsOutput, nn.weightsHO, nn.biasHO)
 

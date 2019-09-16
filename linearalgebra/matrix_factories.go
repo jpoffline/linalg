@@ -23,6 +23,15 @@ func NewNumericMatrixFromVector(vec NumericVector) *NumericMatrix {
 	return mtx
 }
 
+func NewNumericMatrixFromSlice(sli []Number) *NumericMatrix {
+	cap := len(sli)
+	mtx := NewNumericMatrix(cap, 1)
+	for i := 0; i < cap; i++ {
+		mtx.values[i][0] = sli[i]
+	}
+	return mtx
+}
+
 // NewIdentityMatrix returns an identity matrix with
 // the provided dimension (these are square, diagonal
 // contain zeros everywhere except the diagonal, which are unity).

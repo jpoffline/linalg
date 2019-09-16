@@ -9,7 +9,6 @@ func (mtx *NumericMatrix) Mul(mtx1 *NumericMatrix) *NumericMatrix {
 		mtx.Print()
 		mtx1.Print()
 		panic("incompatible matrix multiplication attempted")
-		return nil
 	}
 
 	res := NewNumericMatrix(mtx.dimx, mtx1.dimy)
@@ -31,14 +30,13 @@ func (mtx *NumericMatrix) ElemMul(mtx1 *NumericMatrix) *NumericMatrix {
 		mtx.Print()
 		mtx1.Print()
 		panic("incompatible matrix element-multiplication attempted: dimx")
-		return nil
 	}
 
 	if mtx.dimy != mtx1.dimy {
 		mtx.Print()
 		mtx1.Print()
 		panic("incompatible matrix element-multiplication attempted: dimy")
-		return nil
+
 	}
 
 	res := NewNumericMatrix(mtx.dimx, mtx1.dimy)
@@ -128,11 +126,11 @@ func (mtx *NumericMatrix) Len() (int, int) {
 }
 
 // ToVector will convert a matrix into a vector by squashing.
-func (mtx *NumericMatrix) ToVector() *NumericVector {
-	vec := NewEmptyNumericVector()
+func (mtx *NumericMatrix) ToVector() []Number {
+	var vec []Number
 	for i := 0; i < mtx.dimx; i++ {
 		for j := 0; j < mtx.dimy; j++ {
-			vec.Push(mtx.values[i][j])
+			vec = append(vec, mtx.values[i][j])
 		}
 	}
 	return vec

@@ -1,5 +1,7 @@
 package linearalgebra
 
+import "encoding/json"
+
 // Number is the type used for numbers.
 type Number float64
 
@@ -15,4 +17,8 @@ type NumericVector struct {
 type NumericMatrix struct {
 	values     [][]Number
 	dimx, dimy int
+}
+
+func (m *NumericMatrix) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]interface{}{"dimx": m.dimx, "dimy": m.dimy, "values": m.values})
 }
