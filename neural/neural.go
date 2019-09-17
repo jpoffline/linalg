@@ -2,6 +2,7 @@ package neural
 
 import (
 	"fmt"
+	"os"
 
 	linalg "github.com/jpoffline/linalg/linearalgebra"
 )
@@ -21,6 +22,12 @@ func New(numInput, numHidden, numOutput int) *NeuralNet {
 	nn.Info(nn.meta)
 
 	return &nn
+}
+
+// SetOutputLoc sets the output location for the neural net.
+func (nn *NeuralNet) SetOutputLoc(loc string) {
+	nn.OutputData.Loc = loc
+	os.MkdirAll(nn.OutputData.Loc, os.ModePerm)
 }
 
 func (nn *NeuralNet) build(meta Meta) {

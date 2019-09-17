@@ -13,7 +13,9 @@ func xorCheck(nn *neural.NeuralNet, i, t []linalg.Number) {
 }
 
 func nnXOR() {
-	neuralnet := neural.New(2, 2, 1)
+	neuralnet := neural.New(2, 4, 1)
+	neuralnet.SetOutputLoc("output")
+
 	td := []neural.TrainingData{
 		neural.TrainingData{Inputs: []linalg.Number{1, 1}, Targets: []linalg.Number{0}},
 		neural.TrainingData{Inputs: []linalg.Number{1, 0}, Targets: []linalg.Number{1}},
@@ -30,11 +32,6 @@ func nnXOR() {
 
 }
 
-func runnn() {
-
-	nnXOR()
-}
-
 func main() {
-	runnn()
+	nnXOR()
 }

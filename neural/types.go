@@ -13,12 +13,17 @@ type Meta struct {
 // NeuralNet is the main neural net struct, containing
 // all the required data.
 type NeuralNet struct {
+	OutputData
 	meta       Meta
 	trainCount int
 	weightsIH  Weights
 	weightsHO  Weights
 	biasIH     Bias
 	biasHO     Bias
+}
+
+type OutputData struct {
+	Loc string
 }
 
 // Weights is the type to hold the weights connecting neurons
