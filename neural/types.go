@@ -16,10 +16,12 @@ type NeuralNet struct {
 	OutputData
 	meta       Meta
 	trainCount int
-	weightsIH  Weights
-	weightsHO  Weights
-	biasIH     Bias
-	biasHO     Bias
+	layers     []neurallayer
+}
+
+type neurallayer struct {
+	weights Weights
+	bias    Bias
 }
 
 type OutputData struct {

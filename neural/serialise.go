@@ -16,11 +16,8 @@ func (nn *NeuralNet) Serialise(filename string) {
 // MarshalJSON will convert a NeuralNet object into a json string.
 func (nn *NeuralNet) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]interface{}{
-		"meta":       nn.meta,
-		"weights_ih": nn.weightsIH,
-		"weights_ho": nn.weightsHO,
-		"bias_ih":    nn.biasIH,
-		"bias_ho":    nn.biasHO,
+		"meta":   nn.meta,
+		"layers": nn.layers,
 	})
 }
 
@@ -32,5 +29,12 @@ func (m Meta) MarshalJSON() ([]byte, error) {
 		"numOutput":    m.numOutput,
 		"trainCount":   m.trainCount,
 		"learningRate": m.learningRate,
+	})
+}
+
+func (l neurallayer) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]interface{}{
+		"weights": l.weights,
+		"bias":    l.bias,
 	})
 }

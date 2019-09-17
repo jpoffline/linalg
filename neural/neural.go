@@ -7,14 +7,18 @@ import (
 	linalg "github.com/jpoffline/linalg/linearalgebra"
 )
 
+func NetworkArchitecture(numInput, numHidden, numOutput int) Meta {
+	return Meta{numInputs: numInput,
+		numHidden: numHidden,
+		numOutput: numOutput,
+	}
+}
+
 // New will initialise a new neural network, with the provided
 // number of inputs, hidden neurons, and outputs.
-func New(numInput, numHidden, numOutput int) *NeuralNet {
+func New(m Meta) *NeuralNet {
 	nn := NeuralNet{
-		meta: Meta{numInputs: numInput,
-			numHidden: numHidden,
-			numOutput: numOutput,
-		},
+		meta: m,
 	}
 
 	nn.build(nn.meta)
@@ -31,10 +35,17 @@ func (nn *NeuralNet) SetOutputLoc(loc string) {
 }
 
 func (nn *NeuralNet) build(meta Meta) {
-	nn.weightsIH = linalg.NewRandomMatrix(meta.numHidden, meta.numInputs)
-	nn.weightsHO = linalg.NewRandomMatrix(meta.numOutput, meta.numHidden)
-	nn.biasIH = linalg.NewRandomMatrix(meta.numHidden, 1)
-	nn.biasHO = linalg.NewRandomMatrix(meta.numOutput, 1)
+
+	lyr0 := neurallayer{
+		weights: linalg.NewRandomMatrix(meta.numHidden, meta.numInputs),
+		bias:    linalg.NewRandomMatrix(meta.numHidden, 1),
+	}
+	lyr1 := neurallayer{
+		weights: linalg.NewRandomMatrix(meta.numOutput, meta.numHidden),
+		bias:    linalg.NewRandomMatrix(meta.numOutput, 1),
+	}
+	nn.layers = append(nn.layers, lyr0)
+	nn.layers = append(nn.layers, lyr1)
 }
 
 // SetLearningRate will set the learning rate of the neural net.

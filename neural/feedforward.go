@@ -9,9 +9,9 @@ func (nn *NeuralNet) FeedForward(inputs []linalg.Number) []linalg.Number {
 	// prepare the input.
 	im := linalg.NewNumericMatrixFromSlice(inputs)
 	// generate the hidden outputs.
-	hiddenOutputs := doLayerCalc(nn.weightsIH, im, nn.biasIH)
+	hiddenOutputs := doLayerCalc(nn.layers[0].weights, im, nn.layers[0].bias)
 	// generate the final output.
-	outputs := doLayerCalc(nn.weightsHO, hiddenOutputs, nn.biasHO)
+	outputs := doLayerCalc(nn.layers[1].weights, hiddenOutputs, nn.layers[1].bias)
 	// send back to caller as a vector.
 	return outputs.ToVector()
 }

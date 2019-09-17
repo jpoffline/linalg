@@ -32,35 +32,36 @@ func (nn *NeuralNet) train(inputs, targets []linalg.Number) linalg.Number {
 
 	// generate the hidden outputs.
 
-	ho1 := nn.weightsIH.Mul(im)
-	hiddenOutputs := ho1.Add(nn.biasIH)
+	ho1 := nn.layers[0].weights.Mul(im)
+	hiddenOutputs := ho1.Add(nn.layers[0].bias)
 	hiddenOutputs = hiddenOutputs.Map(func(num linalg.Number) linalg.Number { return linalg.Sigmoid(num) })
 
 	// generate the final output.
-	fo1 := nn.weightsHO.Mul(hiddenOutputs)
-	outputs := fo1.Add(nn.biasHO)
+	fo1 := nn.layers[1].weights.Mul(hiddenOutputs)
+	outputs := fo1.Add(nn.layers[1].bias)
 	outputs = outputs.Map(func(num linalg.Number) linalg.Number { return linalg.Sigmoid(num) })
 
 	// calc output layer errors.
 	targetsM := linalg.NewNumericMatrixFromSlice(targets)
 	errorsOutput := calcErrorOutputLayer(targetsM, outputs)
-	nn.weightsHO, nn.biasHO = calcNewWeightsBias(nn.meta.learningRate, hiddenOutputs, outputs, errorsOutput, nn.weightsHO, nn.biasHO)
+	nn.calcNewWeightsBias(hiddenOutputs, outputs, errorsOutput, 1)
 
 	// calc hidden layer errors
-	errorsHidden := calcErrorHiddenLayer(nn.weightsHO, errorsOutput)
-	nn.weightsIH, nn.biasIH = calcNewWeightsBias(nn.meta.learningRate, im, hiddenOutputs, errorsHidden, nn.weightsIH, nn.biasIH)
+	errorsHidden := calcErrorHiddenLayer(nn.layers[1].weights, errorsOutput)
+	nn.calcNewWeightsBias(im, hiddenOutputs, errorsHidden, 0)
 
 	return errorsOutput.Mag()
 }
 
-func calcNewWeightsBias(lr linalg.Number, ip, o, e, w, b *linalg.NumericMatrix) (*linalg.NumericMatrix, *linalg.NumericMatrix) {
+func (nn *NeuralNet) calcNewWeightsBias(ip, o, e *linalg.NumericMatrix, lyridx int) {
 	gradHidden := gradient(o, e)
-	gradHidden = gradHidden.Map(func(elem linalg.Number) linalg.Number { return elem * lr })
+	gradHidden = gradHidden.Map(func(elem linalg.Number) linalg.Number { return elem * nn.meta.learningRate })
 	inputsT := ip.Transpose()
 	weightsIHdel := gradHidden.Mul(inputsT)
 
 	// adjust
-	return w.Add(weightsIHdel), b.Add(gradHidden)
+	nn.layers[lyridx].weights = nn.layers[lyridx].weights.Add(weightsIHdel)
+	nn.layers[lyridx].bias = nn.layers[lyridx].bias.Add(gradHidden)
 }
 
 func gradient(output, errors *linalg.NumericMatrix) *linalg.NumericMatrix {
