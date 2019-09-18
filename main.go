@@ -7,9 +7,8 @@ import (
 	"image/png"
 	"math"
 	"math/rand"
-	"os"
-	"path/filepath"
 
+	"github.com/jpoffline/linalg/datastore"
 	"github.com/jpoffline/linalg/neural"
 )
 
@@ -77,21 +76,22 @@ func circleTrainingData(np int) []neural.TrainingData {
 }
 
 func circleClassify() {
+	ds := datastore.New("nncircle")
 	netArch := neural.NetworkArchitecture(2, 6, 1)
 
 	neuralnet := neural.New(netArch)
 
-	neuralnet.SetOutputLoc("output_circle")
+	neuralnet.SetOutputLoc(ds.Root())
 	neuralnet.SetLearningRate(0.5)
 	neuralnet.Info()
 	td := circleTrainingData(100)
 	neuralnet.Train(td, 500000)
 
 	myImage := image.NewRGBA(image.Rect(0, 0, 400, 400))
-	outputFile, _ := os.Create(filepath.Join("output_circle", "predictions.png"))
-	filename := filepath.Join("output_circle", "predictions.csv")
-	file, _ := os.Create(filename)
+	outputFile, _ := ds.CreateFile("predictions.png")
+	file, _ := ds.CreateFile("predictions.csv")
 	defer file.Close()
+	defer outputFile.Close()
 	w := bufio.NewWriter(file)
 	c := 0
 	for i := -2.0; i <= 2; i += 0.01 {
@@ -108,11 +108,11 @@ func circleClassify() {
 	}
 
 	png.Encode(outputFile, myImage)
-	outputFile.Close()
 
 }
 
 func main() {
 	//nnXOR()
 	circleClassify()
+
 }
