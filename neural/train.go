@@ -1,16 +1,19 @@
 package neural
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 
 	linalg "github.com/jpoffline/linalg/linearalgebra"
+
 	history "github.com/jpoffline/linalg/neural/history"
 )
 
 // Train will train the network on the provided training data
 // for the given number of iterations.
 func (nn *NeuralNet) Train(data []TrainingData, iters int) {
+	fmt.Printf("training neural net with %v peices of training data over %v iterations\n", len(data), iters)
 	ndata := len(data)
 	hist := history.New(nn.OutputData.Loc)
 	defer hist.Write()
@@ -22,6 +25,7 @@ func (nn *NeuralNet) Train(data []TrainingData, iters int) {
 		}
 	}
 
+	fmt.Printf("training complete\n")
 }
 
 // train will train the net for the provided inputs and targets.

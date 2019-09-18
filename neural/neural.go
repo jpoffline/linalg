@@ -23,7 +23,6 @@ func New(m Meta) *NeuralNet {
 
 	nn.build(nn.meta)
 	nn.SetLearningRate(0.05)
-	nn.Info(nn.meta)
 
 	return &nn
 }
@@ -32,6 +31,10 @@ func New(m Meta) *NeuralNet {
 func (nn *NeuralNet) SetOutputLoc(loc string) {
 	nn.OutputData.Loc = loc
 	os.MkdirAll(nn.OutputData.Loc, os.ModePerm)
+}
+
+func (nn *NeuralNet) Info() {
+	nn.info(nn.meta)
 }
 
 func (nn *NeuralNet) build(meta Meta) {
@@ -61,7 +64,7 @@ func (nn *NeuralNet) SetLearningRate(lr linalg.Number) {
 }
 
 // Info will print out information about the neural net.
-func (nn *NeuralNet) Info(meta Meta) {
+func (nn *NeuralNet) info(meta Meta) {
 	fmt.Println("---------------------------------------------")
 	fmt.Println("Neural net info")
 	fmt.Printf("    => number of inputs: %v\n", meta.numInputs)
