@@ -29,23 +29,34 @@ type OutputData struct {
 	Loc string
 }
 
+// Number is the neural network number type;
+// here we type-alias the number-type
+// from the linalg library.
 type Number = linalg.Number
 
+// Vector is the neural network vector type;
+// here we make it a slice of neural-net-Numbers.
 type Vector = []Number
 
-// Weights is the type to hold the weights connecting neurons
-type Weights = *linalg.NumericMatrix
+// Matrix is the neural network numeric matrix type;
+// here we type-alias the pointer to a NumericMatrix
+// from the linalg library.
+type Matrix = *linalg.NumericMatrix
 
-// Bias is the type to hold the biases
-type Bias = *linalg.NumericMatrix
+// Weights is the type to hold the weights connecting neurons.
+type Weights = Matrix
 
-// Inputs is the type to hold the inputs to neurons
-type Inputs = *linalg.NumericMatrix
+// Bias is the type to hold the biases.
+type Bias = Matrix
 
-// Outputs is the type to hold the outputs of the neural net
-type Outputs = *linalg.NumericMatrix
+// Inputs is the type to hold the inputs to neurons.
+type Inputs = Matrix
 
-type Activations = *linalg.NumericMatrix
+// Outputs is the type to hold the outputs of the neural net.
+type Outputs = Matrix
+
+// Activations is the type to hold the activations of the neurons.
+type Activations = Matrix
 
 type TrainingData struct {
 	Inputs  []linalg.Number

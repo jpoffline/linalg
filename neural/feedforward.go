@@ -22,5 +22,5 @@ func (nn *NeuralNet) doLayerCalc(inputs Inputs, lyridx int) {
 	// now add in the bias
 	p2 := p1.Add(nn.layers[lyridx].bias)
 	// apply activation function
-	nn.layers[lyridx].activations = p2.Map(func(num linalg.Number) linalg.Number { return linalg.Sigmoid(num) })
+	nn.layers[lyridx].activations = p2.Map(func(num Number) Number { return linalg.Sigmoid(num) })
 }

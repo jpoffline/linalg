@@ -47,7 +47,7 @@ func (nn *NeuralNet) train(inputs, targets Vector) Number {
 	return errorsOutput.Mag()
 }
 
-func (nn *NeuralNet) calcNewWeightsBias(ip, e *linalg.NumericMatrix, lyridx int) {
+func (nn *NeuralNet) calcNewWeightsBias(ip, e Matrix, lyridx int) {
 	gradHidden := gradient(nn.layers[lyridx].activations, e)
 	gradHidden = gradHidden.Map(func(elem Number) Number {
 		return elem * nn.meta.learningRate
@@ -60,18 +60,18 @@ func (nn *NeuralNet) calcNewWeightsBias(ip, e *linalg.NumericMatrix, lyridx int)
 	nn.layers[lyridx].bias = nn.layers[lyridx].bias.Add(gradHidden)
 }
 
-func gradient(output, errors *linalg.NumericMatrix) *linalg.NumericMatrix {
+func gradient(output, errors Matrix) Matrix {
 	o2 := output.Map(func(elem Number) Number {
 		return linalg.Dsigmoid2(elem)
 	})
 	return o2.ElemMul(errors)
 }
 
-func calcErrorOutputLayer(t, o *linalg.NumericMatrix) *linalg.NumericMatrix {
+func calcErrorOutputLayer(t, o Matrix) Matrix {
 	return t.Subtract(o)
 }
 
-func calcErrorHiddenLayer(w, e *linalg.NumericMatrix) *linalg.NumericMatrix {
+func calcErrorHiddenLayer(w, e Matrix) Matrix {
 	weightsHOT := w.Transpose()
 	return weightsHOT.Mul(e)
 }
