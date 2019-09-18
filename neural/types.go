@@ -20,13 +20,18 @@ type NeuralNet struct {
 }
 
 type neurallayer struct {
-	weights Weights
-	bias    Bias
+	weights     Weights
+	bias        Bias
+	activations Activations
 }
 
 type OutputData struct {
 	Loc string
 }
+
+type Number = linalg.Number
+
+type Vector = []Number
 
 // Weights is the type to hold the weights connecting neurons
 type Weights = *linalg.NumericMatrix
@@ -39,6 +44,8 @@ type Inputs = *linalg.NumericMatrix
 
 // Outputs is the type to hold the outputs of the neural net
 type Outputs = *linalg.NumericMatrix
+
+type Activations = *linalg.NumericMatrix
 
 type TrainingData struct {
 	Inputs  []linalg.Number

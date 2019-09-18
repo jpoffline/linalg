@@ -25,37 +25,33 @@ func (nn *NeuralNet) Train(data []TrainingData, iters int) {
 }
 
 // train will train the net for the provided inputs and targets.
-func (nn *NeuralNet) train(inputs, targets []linalg.Number) linalg.Number {
+func (nn *NeuralNet) train(inputs, targets Vector) Number {
 	nn.trainCount++
 	// prepare inputs.
 	im := linalg.NewNumericMatrixFromSlice(inputs)
 
-	// generate the hidden outputs.
-
-	ho1 := nn.layers[0].weights.Mul(im)
-	hiddenOutputs := ho1.Add(nn.layers[0].bias)
-	hiddenOutputs = hiddenOutputs.Map(func(num linalg.Number) linalg.Number { return linalg.Sigmoid(num) })
-
-	// generate the final output.
-	fo1 := nn.layers[1].weights.Mul(hiddenOutputs)
-	outputs := fo1.Add(nn.layers[1].bias)
-	outputs = outputs.Map(func(num linalg.Number) linalg.Number { return linalg.Sigmoid(num) })
+	// generate the hidden activations.
+	nn.doLayerCalc(im, 0)
+	// generate the output activations.
+	nn.doLayerCalc(nn.layers[0].activations, 1)
 
 	// calc output layer errors.
 	targetsM := linalg.NewNumericMatrixFromSlice(targets)
-	errorsOutput := calcErrorOutputLayer(targetsM, outputs)
-	nn.calcNewWeightsBias(hiddenOutputs, outputs, errorsOutput, 1)
+	errorsOutput := calcErrorOutputLayer(targetsM, nn.layers[1].activations)
+	nn.calcNewWeightsBias(nn.layers[0].activations, errorsOutput, 1)
 
 	// calc hidden layer errors
 	errorsHidden := calcErrorHiddenLayer(nn.layers[1].weights, errorsOutput)
-	nn.calcNewWeightsBias(im, hiddenOutputs, errorsHidden, 0)
+	nn.calcNewWeightsBias(im, errorsHidden, 0)
 
 	return errorsOutput.Mag()
 }
 
-func (nn *NeuralNet) calcNewWeightsBias(ip, o, e *linalg.NumericMatrix, lyridx int) {
-	gradHidden := gradient(o, e)
-	gradHidden = gradHidden.Map(func(elem linalg.Number) linalg.Number { return elem * nn.meta.learningRate })
+func (nn *NeuralNet) calcNewWeightsBias(ip, e *linalg.NumericMatrix, lyridx int) {
+	gradHidden := gradient(nn.layers[lyridx].activations, e)
+	gradHidden = gradHidden.Map(func(elem Number) Number {
+		return elem * nn.meta.learningRate
+	})
 	inputsT := ip.Transpose()
 	weightsIHdel := gradHidden.Mul(inputsT)
 
@@ -65,7 +61,9 @@ func (nn *NeuralNet) calcNewWeightsBias(ip, o, e *linalg.NumericMatrix, lyridx i
 }
 
 func gradient(output, errors *linalg.NumericMatrix) *linalg.NumericMatrix {
-	o2 := output.Map(func(elem linalg.Number) linalg.Number { return linalg.Dsigmoid2(elem) })
+	o2 := output.Map(func(elem Number) Number {
+		return linalg.Dsigmoid2(elem)
+	})
 	return o2.ElemMul(errors)
 }
 

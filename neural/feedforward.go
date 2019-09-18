@@ -4,26 +4,23 @@ import (
 	linalg "github.com/jpoffline/linalg/linearalgebra"
 )
 
-// FeedForward is the place to pass the provided inputs to the neural network.
-func (nn *NeuralNet) FeedForward(inputs []linalg.Number) []linalg.Number {
+// Predict is the place to pass the provided inputs to the neural network.
+func (nn *NeuralNet) Predict(inputs Vector) Vector {
 	// prepare the input.
 	im := linalg.NewNumericMatrixFromSlice(inputs)
 	// generate the hidden outputs.
-	hiddenOutputs := doLayerCalc(nn.layers[0].weights, im, nn.layers[0].bias)
+	nn.doLayerCalc(im, 0)
 	// generate the final output.
-	outputs := doLayerCalc(nn.layers[1].weights, hiddenOutputs, nn.layers[1].bias)
+	nn.doLayerCalc(nn.layers[0].activations, 1)
 	// send back to caller as a vector.
-	return outputs.ToVector()
+	return nn.layers[1].activations.ToVector()
 }
 
-func doLayerCalc(weights Weights, inputs Inputs, bias Bias) Outputs {
+func (nn *NeuralNet) doLayerCalc(inputs Inputs, lyridx int) {
 	// multiply W x I
-	p1 := weights.Mul(inputs)
+	p1 := nn.layers[lyridx].weights.Mul(inputs)
 	// now add in the bias
-	p2 := p1.Add(bias)
+	p2 := p1.Add(nn.layers[lyridx].bias)
 	// apply activation function
-
-	// return to caller.
-	return p2.Map(func(num linalg.Number) linalg.Number { return linalg.Sigmoid(num) })
-
+	nn.layers[lyridx].activations = p2.Map(func(num linalg.Number) linalg.Number { return linalg.Sigmoid(num) })
 }
