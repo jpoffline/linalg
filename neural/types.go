@@ -19,14 +19,21 @@ type NeuralNet struct {
 	layers     []neurallayer
 }
 
+// neurallayer is the data structure holding neurons, their weights,
+// biases, and activations.
 type neurallayer struct {
-	weights     Weights
-	bias        Bias
-	activations Activations
+	weights     Weights     // weights in the layer.
+	bias        Bias        // biases for the layer.
+	activations Activations // activations of the neurons in the layer.
 }
 
 type OutputData struct {
 	Loc string
+}
+
+type NeuralLayerMeta struct {
+	ID         int
+	NumNeurons int
 }
 
 // Number is the neural network number type;

@@ -36,16 +36,23 @@ func (nn *NeuralNet) SetOutputLoc(loc string) {
 
 func (nn *NeuralNet) build(meta Meta) {
 
-	lyr0 := neurallayer{
-		weights: linalg.NewRandomMatrix(meta.numHidden, meta.numInputs),
-		bias:    linalg.NewRandomMatrix(meta.numHidden, 1),
+	lyrs := []NeuralLayerMeta{
+		NeuralLayerMeta{ID: 0, NumNeurons: meta.numInputs},
+		NeuralLayerMeta{ID: 1, NumNeurons: meta.numHidden},
+		NeuralLayerMeta{ID: 2, NumNeurons: meta.numOutput},
 	}
-	lyr1 := neurallayer{
-		weights: linalg.NewRandomMatrix(meta.numOutput, meta.numHidden),
-		bias:    linalg.NewRandomMatrix(meta.numOutput, 1),
+
+	for idx := 0; idx < len(lyrs)-1; idx++ {
+
+		thislayer := neurallayer{
+			weights: linalg.NewRandomMatrix(lyrs[idx+1].NumNeurons, lyrs[idx].NumNeurons),
+			bias:    linalg.NewRandomMatrix(lyrs[idx+1].NumNeurons, 1),
+		}
+
+		nn.layers = append(nn.layers, thislayer)
+
 	}
-	nn.layers = append(nn.layers, lyr0)
-	nn.layers = append(nn.layers, lyr1)
+
 }
 
 // SetLearningRate will set the learning rate of the neural net.
