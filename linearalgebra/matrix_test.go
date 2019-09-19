@@ -80,7 +80,7 @@ func TestMatrixMultiplicationForCompatibleRectangularMatrices(t *testing.T) {
 func TestToVector(t *testing.T) {
 	mtx := NewNumericMatrix(3, 2)
 	vec := mtx.ToVector()
-	if vec.dim != mtx.dimx*mtx.dimy {
+	if len(vec) != mtx.dimx*mtx.dimy {
 		t.Errorf("vector not of expected size")
 	}
 }
