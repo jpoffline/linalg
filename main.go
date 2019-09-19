@@ -2,11 +2,8 @@ package main
 
 import (
 	"fmt"
-	"image"
-	"image/png"
 	"math"
 	"math/rand"
-	"strconv"
 
 	"github.com/jpoffline/linalg/neural"
 )
@@ -40,6 +37,7 @@ func nnXOR() {
 	neuralnet := neural.New(netArch)
 	neuralnet.InitDataStore("xor")
 	neuralnet.Info()
+
 	td := xorTrainingData()
 	neuralnet.Train(td, 1000000)
 
@@ -49,7 +47,7 @@ func nnXOR() {
 		checkPredict(neuralnet, d.Inputs, d.Targets)
 	}
 
-	classifyDraw(neuralnet, 1000000)
+	neuralnet.ClassifyDraw(1000000)
 
 }
 
@@ -76,43 +74,6 @@ func circleTrainingData(np int) []neural.TrainingData {
 	return data
 }
 
-func classifyDraw(neuralnet *neural.NeuralNet, id int) {
-
-	xmin := -1.0
-	xmax := 1.0
-	ymin := xmin
-	ymax := xmax
-
-	imgsize := 100
-
-	dx := (xmax - xmin) / float64(imgsize)
-	dy := (ymax - ymin) / float64(imgsize)
-
-	myImage := image.NewRGBA(image.Rect(0, 0, imgsize, imgsize))
-	outputFile, _ := neuralnet.DataStore.CreateFile("predictions-" + strconv.Itoa(id) + ".png")
-
-	defer outputFile.Close()
-
-	c := 0
-	score := 0.0
-	for i := xmin; i <= xmax; i += dx {
-		for j := ymin; j <= ymax; j += dy {
-
-			pred := float64(neuralnet.Predict(neural.Vector{neural.Number(i), neural.Number(j)})[0])
-			sq := circleIsIn(i, j) - pred
-			score += sq * sq
-
-			myImage.Pix[c] = uint8(pred * 255)
-			myImage.Pix[c+3] = 255
-			c += 4
-		}
-
-	}
-
-	png.Encode(outputFile, myImage)
-	fmt.Printf("* score: %v\n", score)
-}
-
 func circleClassify() {
 	netArch := neural.NetworkArchitecture(2, 6, 1)
 
@@ -124,19 +85,19 @@ func circleClassify() {
 	td := circleTrainingData(20000)
 
 	neuralnet.Train(td, 10)
-	classifyDraw(neuralnet, 10)
+	neuralnet.ClassifyDraw(10)
 
 	neuralnet.Train(td, 100)
-	classifyDraw(neuralnet, 110)
+	neuralnet.ClassifyDraw(110)
 
 	neuralnet.Train(td, 1000)
-	classifyDraw(neuralnet, 1110)
+	neuralnet.ClassifyDraw(1110)
 
 	neuralnet.Train(td, 10000)
-	classifyDraw(neuralnet, 11110)
+	neuralnet.ClassifyDraw(11110)
 
 	neuralnet.Train(td, 100000)
-	classifyDraw(neuralnet, 111110)
+	neuralnet.ClassifyDraw(111110)
 
 	neuralnet.Serialise("nn.json")
 

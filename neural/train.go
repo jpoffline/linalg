@@ -26,7 +26,7 @@ func (nn *NeuralNet) Train(data []TrainingData, iters int) {
 		}
 	}
 
-	fmt.Printf("*training complete\n")
+	fmt.Printf("* training complete\n")
 }
 
 // train will train the net for the provided inputs and targets.
