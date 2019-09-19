@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/jpoffline/linalg/datastore"
 	linalg "github.com/jpoffline/linalg/linearalgebra"
 )
 
@@ -27,12 +28,20 @@ func New(m Meta) *NeuralNet {
 	return &nn
 }
 
+// InitDataStore will initialise the data store for the neural net;
+// note that the nn will be indexed with the provided name.
+func (nn *NeuralNet) InitDataStore(name string) {
+	nn.DataStore = datastore.New(name)
+	nn.SetOutputLoc(nn.DataStore.Root())
+}
+
 // SetOutputLoc sets the output location for the neural net.
 func (nn *NeuralNet) SetOutputLoc(loc string) {
 	nn.OutputData.Loc = loc
 	os.MkdirAll(nn.OutputData.Loc, os.ModePerm)
 }
 
+// Info will print out meta data associated to the neural net.
 func (nn *NeuralNet) Info() {
 	nn.info(nn.meta)
 }

@@ -1,6 +1,7 @@
 package datastore
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -28,5 +29,6 @@ func New(app string) *DataStore {
 }
 
 func (ds *DataStore) CreateFile(fn string) (*os.File, error) {
+	fmt.Printf("* creating file: %s\n", fn)
 	return os.Create(ds.PathTo(fn))
 }

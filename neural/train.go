@@ -13,8 +13,9 @@ import (
 // Train will train the network on the provided training data
 // for the given number of iterations.
 func (nn *NeuralNet) Train(data []TrainingData, iters int) {
-	fmt.Printf("training neural net with %v peices of training data over %v iterations\n", len(data), iters)
 	ndata := len(data)
+	fmt.Printf("* training neural net with %v peices of training data over %v iterations\n", ndata, iters)
+
 	hist := history.New(nn.OutputData.Loc)
 	defer hist.Write()
 	for i := 0; i < iters; i++ {
@@ -25,7 +26,7 @@ func (nn *NeuralNet) Train(data []TrainingData, iters int) {
 		}
 	}
 
-	fmt.Printf("training complete\n")
+	fmt.Printf("*training complete\n")
 }
 
 // train will train the net for the provided inputs and targets.

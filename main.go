@@ -1,14 +1,13 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"image"
 	"image/png"
 	"math"
 	"math/rand"
+	"strconv"
 
-	"github.com/jpoffline/linalg/datastore"
 	"github.com/jpoffline/linalg/neural"
 )
 
@@ -36,19 +35,21 @@ func xorTrainingData() []neural.TrainingData {
 
 func nnXOR() {
 
-	netArch := neural.NetworkArchitecture(2, 4, 1)
+	netArch := neural.NetworkArchitecture(2, 2, 1)
 
 	neuralnet := neural.New(netArch)
-	neuralnet.SetOutputLoc("output")
-
+	neuralnet.InitDataStore("xor")
+	neuralnet.Info()
 	td := xorTrainingData()
-	neuralnet.Train(td, 100000)
+	neuralnet.Train(td, 1000000)
 
 	neuralnet.Serialise("nn.json")
 
 	for _, d := range td {
 		checkPredict(neuralnet, d.Inputs, d.Targets)
 	}
+
+	classifyDraw(neuralnet, 1000000)
 
 }
 
@@ -75,39 +76,69 @@ func circleTrainingData(np int) []neural.TrainingData {
 	return data
 }
 
-func circleClassify() {
-	ds := datastore.New("nncircle")
-	netArch := neural.NetworkArchitecture(2, 6, 1)
+func classifyDraw(neuralnet *neural.NeuralNet, id int) {
 
-	neuralnet := neural.New(netArch)
+	xmin := -1.0
+	xmax := 1.0
+	ymin := xmin
+	ymax := xmax
 
-	neuralnet.SetOutputLoc(ds.Root())
-	neuralnet.SetLearningRate(0.5)
-	neuralnet.Info()
-	td := circleTrainingData(100)
-	neuralnet.Train(td, 500000)
+	imgsize := 100
 
-	myImage := image.NewRGBA(image.Rect(0, 0, 400, 400))
-	outputFile, _ := ds.CreateFile("predictions.png")
-	file, _ := ds.CreateFile("predictions.csv")
-	defer file.Close()
+	dx := (xmax - xmin) / float64(imgsize)
+	dy := (ymax - ymin) / float64(imgsize)
+
+	myImage := image.NewRGBA(image.Rect(0, 0, imgsize, imgsize))
+	outputFile, _ := neuralnet.DataStore.CreateFile("predictions-" + strconv.Itoa(id) + ".png")
+
 	defer outputFile.Close()
-	w := bufio.NewWriter(file)
+
 	c := 0
-	for i := -2.0; i <= 2; i += 0.01 {
-		for j := -2.0; j <= 2; j += 0.01 {
+	score := 0.0
+	for i := xmin; i <= xmax; i += dx {
+		for j := ymin; j <= ymax; j += dy {
 
-			pred := neuralnet.Predict(neural.Vector{neural.Number(i), neural.Number(j)})[0]
+			pred := float64(neuralnet.Predict(neural.Vector{neural.Number(i), neural.Number(j)})[0])
+			sq := circleIsIn(i, j) - pred
+			score += sq * sq
 
-			fmt.Fprintf(w, "%v, ", pred)
-			myImage.Pix[c] = uint8(float64(pred) * 255)
+			myImage.Pix[c] = uint8(pred * 255)
 			myImage.Pix[c+3] = 255
 			c += 4
 		}
-		fmt.Fprintf(w, "\n")
+
 	}
 
 	png.Encode(outputFile, myImage)
+	fmt.Printf("* score: %v\n", score)
+}
+
+func circleClassify() {
+	netArch := neural.NetworkArchitecture(2, 6, 1)
+
+	neuralnet := neural.New(netArch)
+	neuralnet.InitDataStore("nncircle")
+
+	neuralnet.SetLearningRate(0.5)
+	neuralnet.Info()
+	td := circleTrainingData(20000)
+
+	neuralnet.Train(td, 10)
+	classifyDraw(neuralnet, 10)
+
+	neuralnet.Train(td, 100)
+	classifyDraw(neuralnet, 110)
+
+	neuralnet.Train(td, 1000)
+	classifyDraw(neuralnet, 1110)
+
+	neuralnet.Train(td, 10000)
+	classifyDraw(neuralnet, 11110)
+
+	neuralnet.Train(td, 100000)
+	classifyDraw(neuralnet, 111110)
+
+	neuralnet.Serialise("nn.json")
 
 }
 

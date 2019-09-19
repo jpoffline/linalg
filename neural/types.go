@@ -1,6 +1,7 @@
 package neural
 
 import (
+	"github.com/jpoffline/linalg/datastore"
 	linalg "github.com/jpoffline/linalg/linearalgebra"
 )
 
@@ -17,6 +18,7 @@ type NeuralNet struct {
 	meta       Meta
 	trainCount int
 	layers     []neurallayer
+	DataStore  *datastore.DataStore
 }
 
 // neurallayer is the data structure holding neurons, their weights,
