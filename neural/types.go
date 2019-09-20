@@ -27,6 +27,7 @@ type neurallayer struct {
 	weights     Weights     // weights in the layer.
 	bias        Bias        // biases for the layer.
 	activations Activations // activations of the neurons in the layer.
+	errors      Matrix
 }
 
 type OutputData struct {

@@ -10,10 +10,18 @@ func (nn *NeuralNet) Predict(inputs Vector) Vector {
 	im := linalg.NewNumericMatrixFromSlice(inputs)
 	// generate the hidden outputs.
 	nn.doLayerCalc(im, 0)
-	// generate the final output.
-	nn.doLayerCalc(nn.layers[0].activations, 1)
-	// send back to caller as a vector.
-	return nn.layers[1].activations.ToVector()
+
+	nlayers := len(nn.layers) - 1
+
+	for l := 0; l < nlayers; l++ {
+
+		// generate activations per layer.
+		nn.doLayerCalc(nn.layers[l].activations, l+1)
+	}
+
+	// send back activations of the final (output) layer
+	// to caller, as a vector.
+	return nn.layers[nlayers].activations.ToVector()
 }
 
 func (nn *NeuralNet) doLayerCalc(inputs Inputs, lyridx int) {

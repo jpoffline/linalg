@@ -1,7 +1,6 @@
 package neural
 
 import (
-	"fmt"
 	"math"
 	"math/rand"
 
@@ -14,7 +13,7 @@ import (
 // for the given number of iterations.
 func (nn *NeuralNet) Train(data []TrainingData, iters int) {
 	ndata := len(data)
-	fmt.Printf("* training neural net with %v peices of training data over %v iterations\n", ndata, iters)
+	nn.report("training neural net with %v peices of training data over %v iterations", ndata, iters)
 
 	hist := history.New(nn.OutputData.Loc)
 	defer hist.Write()
@@ -26,7 +25,7 @@ func (nn *NeuralNet) Train(data []TrainingData, iters int) {
 		}
 	}
 
-	fmt.Printf("* training complete\n")
+	nn.report("training complete")
 }
 
 // train will train the net for the provided inputs and targets.
@@ -37,23 +36,30 @@ func (nn *NeuralNet) train(inputs, targets Vector) Number {
 
 	// generate the hidden activations.
 	nn.doLayerCalc(im, 0)
+
+	nlayers := len(nn.layers) - 1
 	// generate the output activations.
-	nn.doLayerCalc(nn.layers[0].activations, 1)
+	for l := 0; l < nlayers; l++ {
+
+		// generate activations per layer.
+		nn.doLayerCalc(nn.layers[l].activations, l+1)
+	}
 
 	// calc output layer errors.
 	targetsM := linalg.NewNumericMatrixFromSlice(targets)
-	errorsOutput := calcErrorOutputLayer(targetsM, nn.layers[1].activations)
-	nn.calcNewWeightsBias(nn.layers[0].activations, errorsOutput, 1)
+
+	nn.layers[1].errors = calcErrorOutputLayer(targetsM, nn.layers[1].activations)
+	nn.calcNewWeightsBias(nn.layers[0].activations, 1)
 
 	// calc hidden layer errors
-	errorsHidden := calcErrorHiddenLayer(nn.layers[1].weights, errorsOutput)
-	nn.calcNewWeightsBias(im, errorsHidden, 0)
+	nn.layers[0].errors = calcErrorHiddenLayer(nn.layers[1].weights, nn.layers[1].errors)
+	nn.calcNewWeightsBias(im, 0)
 
-	return errorsOutput.Mag()
+	return nn.layers[nlayers].errors.Mag()
 }
 
-func (nn *NeuralNet) calcNewWeightsBias(ip, e Matrix, lyridx int) {
-	gradHidden := gradient(nn.layers[lyridx].activations, e)
+func (nn *NeuralNet) calcNewWeightsBias(ip Matrix, lyridx int) {
+	gradHidden := gradient(nn.layers[lyridx].activations, nn.layers[lyridx].errors)
 	gradHidden = gradHidden.Map(func(elem Number) Number {
 		return elem * nn.meta.learningRate
 	})
